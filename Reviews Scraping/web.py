@@ -17,14 +17,8 @@ def get_reviews(address):
     #London Victoria & Albert Museum URL
     driver.get(address)
 
-    #driver.find_element(By.XPATH,'//*[@id="yDmH0d"]/c-wiz/div/div/div/div[2]/div[1]/div[4]/form/div[1]/div/button').click()
-    #to make sure content is fully loaded we can use time.sleep() after navigating to each page
     import time
-    #time.sleep(1)
-
-
-    #Find the total number of reviews
-    #total_number_of_reviews = driver.find_element_by_xpath('//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[58]/div/button').text.split(" ")[0]
+    
     try:
         # get number of reviews
         WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, 'HHrUdb')))
@@ -58,8 +52,6 @@ def get_reviews(address):
         print('more keyword button not found')
         logging.exception("Except")
         pass
-    
-    #driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
     try:
         # click sort button
@@ -85,10 +77,6 @@ def get_reviews(address):
         logging.exception("Except")
         pass
 
-
-    #last_div = driver.find_elements_by_css_selector("[jsan='t-h6_M4FDMGww,7.qCHGyb,5.height,0.role']")
-    #ActionChains(driver).move_to_element(last_div[-1]).perform()
-
     try:
         WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "jftiEf")))
         print('reviews found')
@@ -99,6 +87,7 @@ def get_reviews(address):
 
     time.sleep(1)
     n = 0
+    
     while n < 2:
         try:
             last_div = driver.find_element(By.CLASS_NAME, "lXJj5c")
@@ -108,11 +97,14 @@ def get_reviews(address):
             print("cant scroll")
             logging.exception("Except")
             break
+            
     time.sleep(1)
+    
     response = BeautifulSoup(driver.page_source, 'html.parser')
     reviews = response.find_all('div', class_='jftiEf')
     keywords = response.find_all('div', class_='e2moi')
     driver.quit()
+    
     return get_review_summary(reviews, keywords, type)
 
 def get_review_summary(result_set, keyword_set, type):
@@ -151,13 +143,11 @@ def get_review_summary(result_set, keyword_set, type):
     print(rev_dict['Phrase'])
     print(str(num) + " reviews added")
     return rev_dict
-num = 0
-while num < 10:
-    start = time.time()
-    get_reviews("https://www.google.com/maps/place/Nomiya+Izakaya+%26+Sake+Bar/@1.2830168,103.844223,17z/data=!3m1!5s0x31da197334487039:0x9498c1839e31e20a!4m5!3m4!1s0x0:0xcff17c5fe8df99c1!8m2!3d1.2830168!4d103.844223")
 
-    end = time.time()
-    hours, rem = divmod(end-start, 3600)
-    minutes, seconds = divmod(rem, 60)
-    print("{:0>2}:{:0>2}:{:05.2f}".format(int(hours),int(minutes),seconds))
-    num+=1
+start = time.time()
+get_reviews("https://www.google.com/maps/place/Nomiya+Izakaya+%26+Sake+Bar/@1.2830168,103.844223,17z/data=!3m1!5s0x31da197334487039:0x9498c1839e31e20a!4m5!3m4!1s0x0:0xcff17c5fe8df99c1!8m2!3d1.2830168!4d103.844223")
+
+end = time.time()
+hours, rem = divmod(end-start, 3600)
+minutes, seconds = divmod(rem, 60)
+print("{:0>2}:{:0>2}:{:05.2f}".format(int(hours),int(minutes),seconds))

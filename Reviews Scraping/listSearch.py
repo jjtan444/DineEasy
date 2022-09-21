@@ -7,15 +7,15 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import time
 import pandas as pd    
+
+# Gets list of restaurants links from Google Maps
+
 def get_links(address, num):
     chrome_options = Options()
     #chrome_options.add_argument("--headless")
     driver = webdriver.Chrome(options=chrome_options)
     #London Victoria & Albert Museum URL
     driver.get(address)
-
-    #driver.find_element(By.XPATH,'//*[@id="yDmH0d"]/c-wiz/div/div/div/div[2]/div[1]/div[4]/form/div[1]/div/button').click()
-    #to make sure content is fully loaded we can use time.sleep() after navigating to each page
     
     time.sleep(2)
 
@@ -42,28 +42,3 @@ def get_links(address, num):
         n+=1
     driver.quit()
     return links_list
-
-
-
-"""
-response = BeautifulSoup(driver.page_source, 'html.parser')
-reviews = response.find_all('div', class_='jftiEf')
-
-def get_review_summary(result_set):
-    rev_dict = {'Review Rate': [],
-        'Review Text' : []}
-    for result in result_set:
-        review_rate = result.find('span', class_='kvMYJc')["aria-label"]
-        review_text = result.find('span',class_='wiI7pd').text
-        if review_text == "":
-            break
-        rev_dict['Review Rate'].append(review_rate)
-        rev_dict['Review Text'].append(review_text)
-    
-    return(pd.DataFrame(rev_dict))
-pd.set_option("display.max_rows", None, "display.max_columns", None)
-df = get_review_summary(reviews)
-
-print(len(df))
-print(df)
-"""
